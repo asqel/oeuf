@@ -1,0 +1,2 @@
+act -r src -o out/liboeuf.so -l shared
+act -L -r src -o out/liboeuf.a
