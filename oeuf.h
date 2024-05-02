@@ -55,6 +55,22 @@ if OEUF32 is defined 64bits function will be disabled
 #define U64 	uint64_t 	
 #define U0 		void		
 
+typedef struct {
+	char *flag;
+	char *width;
+	char *precision;
+	char *length;
+	int current_count;
+}oe_format_arg;
+
+
+typedef struct {
+	int (*func)(FILE *, va_list *, oe_format_arg);
+	char *specifier;
+}oe_format_t;
+
+
+
 extern i16 oe_errno;
 
 // read a file at `path` and returns its content as null terminated string

@@ -2,7 +2,14 @@
 #include <stdio.h>
 #include <limits.h>
 #include <stdarg.h>
+#include <stdlib.h>
+#include <string.h>
 #include "../oeuf.h"
+
+
+#ifndef elif
+#define elif else if
+#endif
 
 
 /*
@@ -122,36 +129,69 @@ static int putnbr_i8(i16 n, FILE *fd) {
 	}
 }
 
-typedef struct {
-	int (*func)(FILE*, char *, va_list);
-	char *format;
-	char type;
-	/*
-	0: nothing juste %format
-	1: integer %Iformat ex: %34format
-	2: float   %Fformat ex: %2.1format
-	*/
-}oe_format_t;
+int putnbr(FILE *fd, char *format, va_list *args) {
+	switch (format[0]) {
+		case 'i':
+		case 'd':
+			return putnbr_i32(va_arg(*args, i32), fd);
+		case 'u':
+			return putnbr_u32(va_arg(*args, u32), fd);
+		default:
+			return 0;
+	}
+}
+//%[flags][width][.precision][length]specifier
+/*
+flags: '-', '+', ' ', '#', '0'
+width: number, *
+.precision: .number, .*
+length: h, l, L
+
+*/
 
 
 oe_format_t blt_formats[] = {
-	(oe_format_t){.func = &putnbr_i32},
+	(oe_format_t){.func = &putnbr},
 	
 };
 
-int blt_formats_len = sizeof(blt_formats)/sizeof(blt_formats[0]);
+int blt_formats_len = 1;
 
 oe_format_t *custom_formats = NULL;
 int custom_formats_len = 0;
 
-void oe_register_format() {
-
+void oe_register_format(oe_format_t fm) {
+	custom_formats_len++;
+	custom_formats = realloc(custom_formats, sizeof(oe_format_t) * (custom_formats_len));
+	custom_formats[custom_formats_len - 1] = fm;
 }
 
-static int do_format(FILE *fd, char *format, va_list args) {
-	(void)fd;
-	(void)format;
-	(void)args;
+int does_is_char_good_format(char c) {
+	if (c <= 'Z' && 'A' <= c)
+		return 1;
+	if (c <= 'z' && 'a' <= c)
+		return 1;
+	return 0;
+}
+
+static int do_format(FILE *fd, char *format, va_list *args, oe_format_arg fm_arg) {
+	int end = 0;
+	while (does_is_char_good_format(format[end])) end++;
+
+	char *to_search = malloc(sizeof(char) * (end + 1));
+	memcpy(to_search, format, end);
+	to_search[end] = '\0';
+
+	//find blt format
+	for(int i = 0; i < blt_formats_len; i++) {
+		if (!strcmp(to_search, blt_formats[i].specifier))
+			return blt_formats[i].func(fd, args, fm_arg);
+	}
+
+	for(int i = 0; i < custom_formats_len; i++) {
+		if (!strcmp(to_search, custom_formats[i].specifier))
+			return custom_formats[i].func(fd, args, fm_arg);
+	}
 	return 0;
 }
 
@@ -165,8 +205,100 @@ int oe_fprintf(FILE *fd, char *format, ...) {
 			res++;
 			format++;
 		}
-		else
-			res += do_format(fd, ++format, args);
+		else if (*(format + 1) == '%') {
+			fputc('%', fd);
+			format++;
+			format++;
+			res++;
+		}
+		else {
+			//parse format
+			char *flag = NULL;
+			char *width = NULL;
+			char *precision = NULL;
+			char *length = NULL;
+
+			format++;
+			if (*format == '+') {
+				flag = "+";
+				format++;
+			}
+			elif (*format == '-') {
+				flag = "-";
+				format++;
+			}
+			elif (*format == ' ') {
+				flag = " ";
+				format++;
+			}
+			elif (*format == '#') {
+				flag = "#";
+				format++;
+			}
+			elif (*format == '0') {
+				flag = "0";
+				format++;
+			}
+
+			if (*format == '*') {
+				width = strdup("*");
+				format++;
+			}
+			elif (*format <= 9 && 0 <= *format) {
+				char *start = format;
+				while(*format <= 9 && *format >= 0) 
+					format++;
+				width = malloc(sizeof(char) * (format - start + 1));
+				int p = 0;
+				while(start != format)
+					width[p++] = *(start++);
+				width[p] = '\0';
+			}
+			if (*format == '.') {
+				format++;
+				if (*format == '*') {
+					precision = strdup("*");
+					format++;
+				}
+				elif (*format <= 9 && 0 <= *format) {
+					char *start = format;
+					while(*format <= 9 && *format >= 0) 
+						format++;
+					precision = malloc(sizeof(char) * (format - start + 1));
+					int p = 0;
+					while(start != format)
+						precision[p++] = *(start++);
+					precision[p] = '\0';
+				}
+			}
+
+			if (*format == 'h') {
+				length = "h";
+				format++;
+			}
+			elif (*format == 'l') {
+				length = "l";
+				format++;
+			}
+			elif (*format == 'L') {
+				length = "L";
+				format++;
+			}
+			res += do_format(
+				fd,
+				format,
+				&args,
+				(oe_format_arg) {
+					.current_count = res,
+					.flag= flag,
+					.length = length,
+					.precision = precision,
+					.width = width
+				}
+			);
+			free(width);
+			free(precision);
+		}
 	}
 	return res;
 }
