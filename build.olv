@@ -1,13 +1,13 @@
 mkdir tmp
 
 for i !(find -e c !src_dir)
-	tcc -o tmp/!(name !i).o -c !i
+	tcc -o tmp/!(name !i).o -c !i -DOEUF32
 end
 
 set all_o ''
 
 for i !(find -e o  tmp)
-	set all_o !all_o' '!i
+	set all_o !all_o' '!i -DOEUF32
 end
 
 tcc -o out/liboeuf.so !all_o  -shared

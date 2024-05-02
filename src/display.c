@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <limits.h>
+#include <stdarg.h>
 #include "../oeuf.h"
 
 
@@ -64,7 +66,7 @@ static int putnbr_u8(u8 n, FILE *fd) {
 static int putnbr_i64(i64 n, FILE *fd) {
 	if (n >= 0) 
 		return putnbr_u64((u64) n, fd);
-	if (n == -9223372036854775808LL) {
+	if (n == LLONG_MIN){
 		fwrite("-9223372036854775808", 1, 20, fd);
 		return 20;
 	}
@@ -94,9 +96,9 @@ static int putnbr_i32(i32 n, FILE *fd) {
 static int putnbr_i16(i16 n, FILE *fd) {
 	if (n >= 0) 
 		return putnbr_u16((u16) n, fd);
-	if (n == -2147483648) {
-		fwrite("-2147483648", 1, 11, fd);
-		return 11;
+	if (n == -32768) {
+		fwrite("-32768", 1, 6, fd);
+		return 6;
 	}
 	else  {
 		fputc('-', fd);
@@ -109,9 +111,9 @@ static int putnbr_i16(i16 n, FILE *fd) {
 static int putnbr_i8(i16 n, FILE *fd) {
 	if (n >= 0) 
 		return putnbr_u8((u8) n, fd);
-	if (n == -2147483648) {
-		fwrite("-2147483648", 1, 11, fd);
-		return 11;
+	if (n == 128) {
+		fwrite("-128", 1, 4, fd);
+		return 4;
 	}
 	else  {
 		fputc('-', fd);
@@ -120,7 +122,51 @@ static int putnbr_i8(i16 n, FILE *fd) {
 	}
 }
 
-int oe_printf(char *format, ...) {
+typedef struct {
+	int (*func)(FILE*, char *, va_list);
+	char *format;
+	char type;
+	/*
+	0: nothing juste %format
+	1: integer %Iformat ex: %34format
+	2: float   %Fformat ex: %2.1format
+	*/
+}oe_format_t;
+
+
+oe_format_t blt_formats[] = {
+	(oe_format_t){.func = &putnbr_i32},
+	
+};
+
+int blt_formats_len = sizeof(blt_formats)/sizeof(blt_formats[0]);
+
+oe_format_t *custom_formats = NULL;
+int custom_formats_len = 0;
+
+void oe_register_format() {
+
+}
+
+static int do_format(FILE *fd, char *format, va_list args) {
+	(void)fd;
+	(void)format;
+	(void)args;
+	return 0;
+}
+
+int oe_fprintf(FILE *fd, char *format, ...) {
 	int res = 0;
+	va_list args;
+	va_start(args, format);
+	while (*format) {
+		if (*format != '%') {
+			fputc(*format, fd);
+			res++;
+			format++;
+		}
+		else
+			res += do_format(fd, ++format, args);
+	}
 	return res;
 }

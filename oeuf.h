@@ -1,12 +1,13 @@
-#ifndef UTILITIES_H
-#define UTILITIES_H
+#ifndef OEUF_H
+#define OEUF_H
 
 /*
 
-if OEUF_64  is defined fonctions for 64bit will be defined
+if OEUF32 is defined 64bits function will be disabled
 
 
 */
+
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -54,7 +55,7 @@ if OEUF_64  is defined fonctions for 64bit will be defined
 #define U64 	uint64_t 	
 #define U0 		void		
 
-
+extern i16 oe_errno;
 
 // read a file at `path` and returns its content as null terminated string
 char *uti_read_file(char *path);
