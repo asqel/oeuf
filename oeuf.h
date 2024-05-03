@@ -144,4 +144,13 @@ int uti_write_file(char *path, char *content, int len);
 */
 char *uti_str_replace(char *str, char *from, char *to);
 
+extern oe_format_t blt_formats[];
+
+extern int blt_formats_len;
+
+extern oe_format_t *custom_formats;
+extern int custom_formats_len;
+
+int oe_fprintf(FILE *fd, char *format, ...);
+
 #endif
