@@ -129,16 +129,13 @@ static int putnbr_i8(i16 n, FILE *fd) {
     }
 }
 
-int putnbr(FILE *fd, char *format, va_list *args) {
-    switch (format[0]) {
-        case 'i':
-        case 'd':
-            return putnbr_i32(va_arg(*args, i32), fd);
-        case 'u':
-            return putnbr_u32(va_arg(*args, u32), fd);
-        default:
-            return 0;
-    }
+static int put_format_d(FILE *, va_list *, oe_format_arg fm_arg) {
+    printf("char printed :%d\n", fm_arg.current_count);
+    printf("flag :%s\n", fm_arg.flag);
+    printf("length :%s\n", fm_arg.length);
+    printf("precision :%s\n", fm_arg.precision);
+    printf("width :%s\n", fm_arg.width);
+    return 0;
 }
 //%[flags][width][.precision][length]specifier
 /*
@@ -149,9 +146,8 @@ length: h, l, L
 
 */
 
-/*
 oe_format_t blt_formats[] = {
-    (oe_format_t){.func = &putnbr},
+    (oe_format_t){.func = &put_format_d, .specifier = "d"},
 };
 
 int blt_formats_len = 1;
@@ -173,7 +169,7 @@ int does_is_char_good_format(char c) {
     return 0;
 }
 
-static int do_format(FILE *fd, char *format, va_list *args, oe_format_arg fm_arg) {
+static int do_format(FILE *fd, char *format, va_list *args, oe_format_arg fm_arg, int *fm_len) {
     int end = 0;
     while (does_is_char_good_format(format[end])) end++;
 
@@ -181,6 +177,7 @@ static int do_format(FILE *fd, char *format, va_list *args, oe_format_arg fm_arg
     memcpy(to_search, format, end);
     to_search[end] = '\0';
 
+    *fm_len = end;
     //find blt format
     for(int i = 0; i < blt_formats_len; i++) {
         if (!strcmp(to_search, blt_formats[i].specifier))
@@ -192,6 +189,24 @@ static int do_format(FILE *fd, char *format, va_list *args, oe_format_arg fm_arg
             return custom_formats[i].func(fd, args, fm_arg);
     }
     return 0;
+}
+
+static char* parse_flag_fm(char **format) {
+    char *flag = NULL;
+    int flag_len = 0;
+    while (1) {
+        char current = **format;
+        if (current != '-' && current != '+' && current != ' ' && current != '0' && current != '\'' && current != '#' )
+            break;
+        else {
+            flag_len++;
+            flag = realloc(flag, sizeof(char) * (flag_len + 1));
+            flag[flag_len - 1] = current;
+            flag[flag_len] = '\0';
+            (*format)++;
+        }
+    }
+    return flag;
 }
 
 int oe_fprintf(FILE *fd, char *format, ...) {
@@ -218,26 +233,7 @@ int oe_fprintf(FILE *fd, char *format, ...) {
             char *length = NULL;
 
             format++;
-            if (*format == '+') {
-                flag = "+";
-                format++;
-            }
-            elif (*format == '-') {
-                flag = "-";
-                format++;
-            }
-            elif (*format == ' ') {
-                flag = " ";
-                format++;
-            }
-            elif (*format == '#') {
-                flag = "#";
-                format++;
-            }
-            elif (*format == '0') {
-                flag = "0";
-                format++;
-            }
+            flag = parse_flag_fm(&format);
 
             if (*format == '*') {
                 width = strdup("*");
@@ -283,6 +279,7 @@ int oe_fprintf(FILE *fd, char *format, ...) {
                 length = "L";
                 format++;
             }
+            int fm_len;
             res += do_format(
                 fd,
                 format,
@@ -293,12 +290,14 @@ int oe_fprintf(FILE *fd, char *format, ...) {
                     .length = length,
                     .precision = precision,
                     .width = width
-                }
+                },
+                &fm_len
             );
+            format = &(format[fm_len]);
             free(width);
+            free(flag);
             free(precision);
         }
     }
     return res;
 }
-*/

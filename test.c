@@ -3,6 +3,6 @@
 
 
 int main() {
-	putnbr_u64(42, stdout);
+	oe_fprintf(stdout, "%d", 1);
 	return 0;
 }

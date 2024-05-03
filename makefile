@@ -8,7 +8,7 @@ linux:
 	mkdir -p tmp
 	@echo building out/liboeuf.so with flags:
 	@echo '    '$(COMMON_FLAGS)
-	@gcc -shared $$(find src -name "*.c") -o out/liboeuf.so $(COMMON_FLAGS)
+	@gcc -shared $$(find src -name "*.c") -o out/liboeuf.so $(COMMON_FLAGS) -fPIC
 	@x='0'; \
 	for i in $$(find src -name "*.c"); do \
 		gcc -c $$i -o tmp/$$x''.o $(COMMON_FLAGS); \

@@ -7,19 +7,20 @@ typedef struct oe_node_t{
     char *key; // if key is NULL node is not set / empty
     void *data;
     struct oe_node_t *next; //last node is NULL
-} oe_node_t;
+}oe_node_t;
 
 
 typedef struct {
     oe_node_t *values;
     int len;
-} oe_hash_map_t;
+}oe_hash_map_t;
+
 i32 oe_hash(char *str) {
+    if (!str) return 0;
     i32 res = 0;
-    while (*str);
-/*
-        res += ((*str) << 5) + *(str++);
-*/
+    str--;
+    while (*(++str))
+        res += ((*str) << 5) + *str;
     return res;
 }
 
