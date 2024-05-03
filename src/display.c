@@ -48,8 +48,8 @@ static int putnbr_u32(u32 n, FILE *fd) {
         return putnbr_u64((u64)n, fd);
     #else
         if (n == 0) {
-        fputc('0', fd);
-        return 1;
+            fputc('0', fd);
+            return 1;
         }
         if (n < 10) {
             fputc('0' + n, fd);
@@ -146,10 +146,8 @@ length: h, l, L
 
 */
 
-
 oe_format_t blt_formats[] = {
     (oe_format_t){.func = &put_format_d, .specifier = "d"},
-    
 };
 
 int blt_formats_len = 1;
