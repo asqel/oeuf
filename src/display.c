@@ -24,6 +24,9 @@ printf format
     printf("%M%d %d", 2, r);
     %M linked to the 2 (length of the array)
     and will take the content of   r as argument for print
+
+%N same as %n but doesn't take argument from va_arg
+
 */
 
 

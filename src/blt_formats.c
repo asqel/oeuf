@@ -111,10 +111,16 @@ static int put_format_d(FILE *fd, va_list *args, oe_format_arg fm_arg) {
     return 0;
 }
 
+static int put_format_n(FILE *, va_list *args, oe_format_arg fm_arg) {
+    int *ptr = va_arg(*args, int *);
+    *ptr = fm_arg.current_count;
+    return 0;
+}
+
 
 oe_format_t blt_formats[] = {
     (oe_format_t){.func = &put_format_d, .specifier = "d"},
-    
+    (oe_format_t){.func = &put_format_n, .specifier = "n"},
 };
 
-int blt_formats_len = 1;
+int blt_formats_len = 2;
