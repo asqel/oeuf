@@ -105,10 +105,9 @@ static int putnbr_i8(i16 n, FILE *fd) {
     }
 }
 
-static int put_format_d(FILE *fd, va_list *args, oe_format_arg fm_arg) {
-	if (fm_arg.flag == NULL && fm_arg.length == NULL && fm_arg.precision == NULL && fm_arg.width == NULL)
-		return putnbr_i32(va_arg(*args, i32), fd);
-    return 0;
+static int put_format_d(FILE *fd, va_list *args, oe_format_arg) {
+    //char left_just = fm_arg.flag.minus;
+	return putnbr_i32(va_arg(*args, i32), fd);
 }
 
 static int put_format_n(FILE *, va_list *args, oe_format_arg fm_arg) {

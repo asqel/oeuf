@@ -11,6 +11,8 @@
 #define elif else if
 #endif
 
+oe_format_flag null_flag = {0};
+
 
 /*
 
@@ -78,18 +80,30 @@ static int do_format(FILE *fd, char *format, va_list *args, oe_format_arg fm_arg
     return 0;
 }
 
-static char* parse_flag_fm(char **format) {
-    char *flag = NULL;
-    int flag_len = 0;
+static oe_format_flag parse_flag_fm(char **format) {
+    oe_format_flag flag = {0};
     while (1) {
         char current = **format;
         if (current != '-' && current != '+' && current != ' ' && current != '0' && current != '\'' && current != '#' )
             break;
         else {
-            flag_len++;
-            flag = realloc(flag, sizeof(char) * (flag_len + 1));
-            flag[flag_len - 1] = current;
-            flag[flag_len] = '\0';
+            switch (current) {
+                case '#':
+                    flag.hash = 1;
+                    break;
+                case '0':
+                    flag.zero = 1;
+                    break;
+                case '-':
+                    flag.minus = 1;
+                    break;
+                case '+':
+                    flag.plus = 1;
+                    break;
+                case ' ':
+                    flag.space = 1;
+                    break;
+            }
             (*format)++;
         }
     }
@@ -114,43 +128,34 @@ int oe_fprintf(FILE *fd, char *format, ...) {
         }
         else {
             //parse format
-            char *flag = NULL;
-            char *width = NULL;
-            char *precision = NULL;
+            oe_format_flag flag;
+            i32 width = 0;
+            i32 precision = 0;
             char *length = NULL;
 
             format++;
             flag = parse_flag_fm(&format);
 
             if (*format == '*') {
-                width = strdup("*");
+                width = -1;
                 format++;
             }
             elif (*format <= 9 && 0 <= *format) {
-                char *start = format;
-                while(*format <= 9 && *format >= 0) 
-                    format++;
-                width = malloc(sizeof(char) * (format - start + 1));
-                int p = 0;
-                while(start != format)
-                    width[p++] = *(start++);
-                width[p] = '\0';
+                while (0 <= *format && *format <= 9) {
+                    width *= 10;
+                    width += (*(format++)) - '0';
+                }
             }
             if (*format == '.') {
-                format++;
                 if (*format == '*') {
-                    precision = strdup("*");
-                    format++;
+                precision = -1;
+                format++;
                 }
                 elif (*format <= 9 && 0 <= *format) {
-                    char *start = format;
-                    while(*format <= 9 && *format >= 0) 
-                        format++;
-                    precision = malloc(sizeof(char) * (format - start + 1));
-                    int p = 0;
-                    while(start != format)
-                        precision[p++] = *(start++);
-                    precision[p] = '\0';
+                    while (0 <= *format && *format <= 9) {
+                        precision *= 10;
+                        precision += (*(format++)) - '0';
+                    }
                 }
             }
 
@@ -173,7 +178,7 @@ int oe_fprintf(FILE *fd, char *format, ...) {
                 &args,
                 (oe_format_arg) {
                     .current_count = res,
-                    .flag= flag,
+                    .flag = flag,
                     .length = length,
                     .precision = precision,
                     .width = width
@@ -181,9 +186,6 @@ int oe_fprintf(FILE *fd, char *format, ...) {
                 &fm_len
             );
             format = &(format[fm_len]);
-            free(width);
-            free(flag);
-            free(precision);
         }
     }
     return res;

@@ -56,9 +56,21 @@ if OEUF32 is defined 64bits function will be disabled
 #define U0 		void		
 
 typedef struct {
-    char *flag;
-    char *width;
-    char *precision;
+    char minus : 1;
+    char plus : 1;
+    char space : 1;
+    char hash : 1;
+    char zero : 1;
+} oe_format_flag;
+
+extern oe_format_flag null_flag;
+
+#define FLAG_CMP(X, Y)  (X.minus == Y.minus && X.plus == Y.plus && X.space == Y.space&& X.hash == Y.hash && X.zero == Y.zero &&)
+
+typedef struct {
+    oe_format_flag flag;
+    i32 width; // if -1 then it's *
+    i32 precision; // same
     char *length;
     int current_count;
 } oe_format_arg;

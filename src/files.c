@@ -1,6 +1,6 @@
 #include "../oeuf.h"
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <stdio.h>
 
 char *oe_read_file_bin(const char *path, size_t *lp) {
