@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-char *uti_str_cat_new(const char *s1, const char *s2) {
+char *oe_str_cat_new(const char *s1, const char *s2) {
     int len1 = strlen(s1);
     int len2 = strlen(s2);
 
@@ -18,7 +18,7 @@ char *uti_str_cat_new(const char *s1, const char *s2) {
     return res;
 }
 
-char *uti_str_cat_new3(const char *s1, const char *s2, const char *s3) {
+char *oe_str_cat_new3(const char *s1, const char *s2, const char *s3) {
     int len1 = strlen(s1);
     int len2 = strlen(s2);
     int len3 = strlen(s3);
@@ -36,7 +36,7 @@ char *uti_str_cat_new3(const char *s1, const char *s2, const char *s3) {
 
 }
 
-char *uti_str_cat_new4(const char *s1, const char *s2, const char *s3, const char *s4) {
+char *oe_str_cat_new4(const char *s1, const char *s2, const char *s3, const char *s4) {
     int len1 = strlen(s1);
     int len2 = strlen(s2);
     int len3 = strlen(s3);

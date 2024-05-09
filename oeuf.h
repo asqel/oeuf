@@ -84,20 +84,20 @@ typedef struct {
 extern i16 oe_errno;
 
 // read a file at `path` and returns its content as null terminated string
-char *uti_read_file(const char *path);
+char *oe_read_file(const char *path);
 
 // read a file at `path` and returns its content and put its length  in *len
-char *uti_read_file_bin(const char *path, size_t *len);
+char *oe_read_file_bin(const char *path, size_t *len);
 
 
 // return a new string which is the concatenation of `s1` and `s2` as null terminated string 
-char *uti_str_cat_new(const char *s1, const char *s2);
+char *oe_str_cat_new(const char *s1, const char *s2);
 
 // return a new string which is the concatenation of `s1` `s2` and `s3` as null terminated string 
-char *uti_str_cat_new3(const char *s1, const char *s2, const char *s3);
+char *oe_str_cat_new3(const char *s1, const char *s2, const char *s3);
 
 // return a new string which is the concatenation of `s1` `s2` `s3`and `s4` as null terminated string 
-char *uti_str_cat_new4(const char *s1, const char *s2, const char *s3, const char *s4);
+char *oe_str_cat_new4(const char *s1, const char *s2, const char *s3, const char *s4);
 
 /*
 split a string by a separator
@@ -114,34 +114,34 @@ char **uit_str_split(char *str, char* sep);
 /*
     apply the selection sort on an array `arr` of integers of length `len`
 */
-void uti_selection_sort_i(int *arr, int len);
+void oe_selection_sort_i(int *arr, int len);
 
 
 /*
 apply selection sort on arr using comp
 comp is a function that takes 2 void * a and b and return a < b
 */
-void uti_selection_sort_c(void *arr, int len, size_t elem_size, int (*comp)(void *, void *));
+void oe_selection_sort_c(void *arr, int len, size_t elem_size, int (*comp)(void *, void *));
 
 
 
 //return the length of a number `n` in base 10
 // if the number return len(-n) + 1
 // -2**31 will be correctly handled and will not overflow
-int uti_number_len(uint32_t n);
+int oe_number_len(uint32_t n);
 
 
 //return the length of a number `n` in base `b`
 // if the number is negative the length of its opposite will be returned + 1
 // -2**31 will be correctly handled and will not overflow
-int uti_number_len_b(uint32_t n, uint32_t b);
+int oe_number_len_b(uint32_t n, uint32_t b);
 
 
 /*	write to a file at `path` the content of `content` of length `len`
     if an error occured during writting or opening the file 1 will be returned
 
 */
-int uti_write_file(char *path, char *content, int len);
+int oe_write_file(char *path, char *content, int len);
 
 
 /*	return a copy of `str` where sequence of `from` are replaced by `to`
@@ -150,7 +150,7 @@ int uti_write_file(char *path, char *content, int len);
     if `from` or `to` is NULL a copy of `str` is returned
     if str is NULL, NULL is retured
 */
-char *uti_str_replace(char *str, char *from, char *to);
+char *oe_str_replace(char *str, char *from, char *to);
 
 extern oe_format_t blt_formats[];
 

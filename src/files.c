@@ -29,7 +29,7 @@ char *oe_read_file_bin(const char *path, size_t *lp) {
     return res;
 }
 
-char *uti_read_file(const char *path) {
+char *oe_read_file(const char *path) {
     size_t len;
     char *data = oe_read_file_bin(path, &len);
 
