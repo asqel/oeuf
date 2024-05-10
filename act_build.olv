@@ -1,2 +1,2 @@
-act -r src -o out/liboeuf.so -l shared -t DOEUF32
-act -L -r src -o out/liboeuf.a -t DOEUF32
+act -r src -o out/liboeuf.so -l shared -t 
+act -L -r src -o out/liboeuf.a -t 

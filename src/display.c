@@ -44,7 +44,16 @@ length: h, l, L
 oe_format_t *custom_formats = NULL;
 int custom_formats_len = 0;
 
+/*
+format starting in N are not allowed 
+raison:
+    une discusion discord
+*/
 void oe_register_format(oe_format_t fm) {
+    if (fm.specifier[0] == 'N') {
+        fprintf(stderr, "ERROR cannot register format that start with 'N'\n");
+        exit(1);
+    }
     custom_formats_len++;
     custom_formats = realloc(custom_formats, sizeof(oe_format_t) * (custom_formats_len));
     custom_formats[custom_formats_len - 1] = fm;

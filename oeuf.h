@@ -1,13 +1,8 @@
 #ifndef OEUF_H
 #define OEUF_H
-
 /*
-
-if OEUF32 is defined 64bits function will be disabled
-
-
+if OEUF64 is defined 64bits function will be enabled
 */
-
 
 #include <stdint.h>
 #include <stdlib.h>

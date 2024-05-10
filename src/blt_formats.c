@@ -4,7 +4,7 @@
 
 
 
-#ifndef OEUF32
+#ifdef OEUF64
 static int putnbr_u64(u64 n, FILE *fd) {
     if (n == 0) {
         fputc('0', fd);
@@ -21,7 +21,7 @@ static int putnbr_u64(u64 n, FILE *fd) {
 #endif
 
 static int putnbr_u32(u32 n, FILE *fd) {
-    #ifndef OEUF32
+    #ifdef OEUF64
         return putnbr_u64((u64)n, fd);
     #else
         if (n == 0) {
@@ -46,7 +46,7 @@ static int putnbr_u8(u8 n, FILE *fd) {
     return putnbr_u32((u32)n, fd);
 }
 
-#ifndef OEUF32
+#ifdef OEUF64
 static int putnbr_i64(i64 n, FILE *fd) {
     if (n >= 0) 
         return putnbr_u64((u64) n, fd);
@@ -105,21 +105,43 @@ static int putnbr_i8(i16 n, FILE *fd) {
     }
 }
 
-static int put_format_d(FILE *fd, va_list *args, oe_format_arg) {
-    //char left_just = fm_arg.flag.minus;
-	return putnbr_i32(va_arg(*args, i32), fd);
+
+/* support:
+  + / space
+*/
+static int put_format_d(FILE *fd, va_list *args, oe_format_arg fm_arg) {
+    i32 value = va_arg(*args, i32);
+    int res = 0;
+    if (value >= 0) {
+        if (fm_arg.flag.plus) {
+            fputc('+', fd);
+            res++;
+        }
+        else if (fm_arg.flag.space) {
+            fputc(' ', fd);
+            res++;
+        }
+    }
+	return putnbr_i32(va_arg(*args, i32), fd) + res;
 }
 
 static int put_format_n(FILE *, va_list *args, oe_format_arg fm_arg) {
     int *ptr = va_arg(*args, int *);
     *ptr = fm_arg.current_count;
     return 0;
+}         
+
+static int put_format_N(FILE *, va_list *, oe_format_arg) {
+    return 0;
 }
+
 
 
 oe_format_t blt_formats[] = {
     (oe_format_t){.func = &put_format_d, .specifier = "d"},
     (oe_format_t){.func = &put_format_n, .specifier = "n"},
+    (oe_format_t){.func = &put_format_N, .specifier = "N"},
+    (oe_format_t){.func = &put_format_N, .specifier = "M"},
 };
 
-int blt_formats_len = 2;
+int blt_formats_len = 3;

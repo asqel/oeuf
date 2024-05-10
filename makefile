@@ -8,10 +8,10 @@ linux:
 	mkdir -p tmp
 	@echo building out/liboe.so with flags:
 	@echo '    '$(COMMON_FLAGS)
-	@gcc -shared $$(find src -name "*.c") -o out/liboe.so $(COMMON_FLAGS) -fPIC
+	@gcc -shared $$(find src -name "*.c") -o out/liboe.so $(COMMON_FLAGS) -fPIC -DOEUF64
 	@x='0'; \
 	for i in $$(find src -name "*.c"); do \
-		gcc -c $$i -o tmp/$$x''.o $(COMMON_FLAGS); \
+		gcc -c $$i -o tmp/$$x''.o $(COMMON_FLAGS) -DOEUF64; \
 		x=$$(($$x + 1)); \
 	done
 	@echo building out/liboe.a with flags:
