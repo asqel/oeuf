@@ -32,7 +32,7 @@ static int putnbr_u32(u32 n, FILE *fd) {
             fputc('0' + n, fd);
             return 1;
         }
-        int res = putnbr_u64(n / 10, fd) + 1;
+        int res = putnbr_u32(n / 10, fd) + 1;
         fputc('0' + (n % 10), fd);
         return res + 1;
     #endif
