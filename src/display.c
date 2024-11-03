@@ -4,7 +4,7 @@
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../oeuf.h"
+#include "oeuf.h"
 
 
 #ifndef elif

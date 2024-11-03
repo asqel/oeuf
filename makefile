@@ -1,6 +1,6 @@
 all :linux
 
-COMMON_FLAGS = -Wall -Werror -Wextra -fno-builtin-printf -Wno-unused-function -fPIC
+COMMON_FLAGS = -Wall -Werror -Wextra -fno-builtin-printf -Wno-unused-function -fPIC -I.
 
 
 linux:

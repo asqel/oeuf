@@ -1,4 +1,4 @@
-#include "../oeuf.h"
+#include "oeuf.h"
 
 #include <stdlib.h>
 #include <string.h>
