@@ -1,7 +1,7 @@
 #ifndef OEUF_H
 #define OEUF_H
 /*
-if OEUF64 is defined 64bits function will be enabled
+if OEUF64 is defined 64bits functionalities will be enabled
 */
 
 #include <stdint.h>
@@ -49,6 +49,14 @@ if OEUF64 is defined 64bits function will be enabled
 #define U32 	uint32_t 	
 #define U64 	uint64_t 	
 #define U0 		void		
+
+#ifdef OEUF64
+    typedef i64 oe_arch_int;
+    typedef u64 oe_arch_uint;
+#else
+    typedef i32 oe_arch_int;
+    typedef u32 oe_arch_uint;
+#endif
 
 typedef struct {
     char minus : 1;
@@ -155,5 +163,10 @@ extern oe_format_t *custom_formats;
 extern int custom_formats_len;
 
 int oe_fprintf(FILE *fd, char *format, ...);
+
+enum oe_errors {
+    oe_err_none,
+    oe_err_hash_map_key_not_found
+};
 
 #endif
