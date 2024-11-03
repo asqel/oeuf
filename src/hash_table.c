@@ -3,7 +3,7 @@
 #include "oeuf.h"
 
 
-typedef struct {
+typedef struct oe_node_t{
     char *key; // if key is NULL node is not set / empty
     void *data;
     struct oe_node_t *next; //last node is NULL
