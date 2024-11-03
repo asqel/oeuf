@@ -28,34 +28,34 @@ if OEUF64 is defined 64bits function will be enabled
 #undef U64
 #undef U0
 
-#define i8 		int8_t		
-#define i16 	int16_t		
-#define i32 	int32_t		
-#define i64 	int64_t		
+#define i8 		int8_t
+#define i16 	int16_t
+#define i32 	int32_t
+#define i64 	int64_t
 
-#define u8 		uint8_t		
-#define u16 	uint16_t 	
-#define u32 	uint32_t 	
-#define u64 	uint64_t 	
-#define u0 		void	
+#define u8 		uint8_t
+#define u16 	uint16_t
+#define u32 	uint32_t
+#define u64 	uint64_t
+#define u0 		void
 
-#define I8 		int8_t		
-#define I16 	int16_t		
-#define I32 	int32_t		
-#define I64 	int64_t		
+#define I8 		int8_t
+#define I16 	int16_t
+#define I32 	int32_t
+#define I64 	int64_t
 
-#define U8 		uint8_t		
-#define U16 	uint16_t 	
-#define U32 	uint32_t 	
-#define U64 	uint64_t 	
-#define U0 		void		
+#define U8 		uint8_t
+#define U16 	uint16_t
+#define U32 	uint32_t
+#define U64 	uint64_t
+#define U0 		void
 
 typedef struct {
-    char minus : 1;
-    char plus : 1;
-    char space : 1;
-    char hash : 1;
-    char zero : 1;
+    char minus;
+    char plus;
+    char space;
+    char hash;
+    char zero;
 } oe_format_flag;
 
 extern oe_format_flag null_flag;
@@ -155,5 +155,14 @@ extern oe_format_t *custom_formats;
 extern int custom_formats_len;
 
 int oe_fprintf(FILE *fd, char *format, ...);
+
+enum oe_errno_values {
+    oe_errno_none,
+    oe_errno_no_mem,
+    oe_errno_free_invalid_pointer,
+
+};
+void *oe_malloc(size_t size);
+void oe_free(void *ptr);
 
 #endif
