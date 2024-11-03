@@ -32,14 +32,14 @@ void *oe_malloc(size_t size) {
 			return &heap[i];
 		}
 	}
-	oe_errno = oe_errno_no_mem;
+	oe_errno = oe_err_no_mem;
 	return NULL;
 }
 
 void oe_free(void *ptr) {
 	u8 *ptr2 = (u8 *)ptr;
 	if ((ptr2 < heap || ptr2 >= heap + HEAP_SIZE) || !is_start(ptr2)) {
-		oe_errno = oe_errno_free_invalid_pointer;
+		oe_errno = oe_err_free_invalid_pointer;
 		return ;
 	}
 	int i = 0;
