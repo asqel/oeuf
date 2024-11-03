@@ -58,6 +58,8 @@ if OEUF64 is defined 64bits functionalities will be enabled
     typedef u32 oe_arch_uint;
 #endif
 
+typedef unsigned int uint;
+
 typedef struct {
     char minus;
     char plus;

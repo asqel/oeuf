@@ -97,7 +97,7 @@ void oe_hash_map_filter(
             void *data,
             const oe_hash_map_t map
     )) {
-    for (int current_hash = 0; current_hash < map.len; current_hash++) {
+    for (oe_arch_uint current_hash = 0; current_hash < map.len; current_hash++) {
         oe_node_t *previous = NULL;
         oe_node_t *node = &(map.values[current_hash]);
         while (node != NULL) {
