@@ -25,47 +25,17 @@ if OEUF64 is defined 64bits functionalities will be enabled
 #include <stdlib.h>
 #include <stdio.h>
 
-#undef i8
-#undef i16
-#undef i32
-#undef i64
-#undef u8
-#undef u16
-#undef u32
-#undef u64
-#undef u0
 
-#undef I8
-#undef I16
-#undef I32
-#undef I64
-#undef U8
-#undef U16
-#undef U32
-#undef U64
-#undef U0
 
-#define i8 		int8_t
-#define i16 	int16_t
-#define i32 	int32_t
-#define i64 	int64_t
+typedef int8_t i8;
+typedef int16_t i16;
+typedef int32_t i32;
+typedef int64_t i64
 
-#define u8 		uint8_t
-#define u16 	uint16_t
-#define u32 	uint32_t
-#define u64 	uint64_t
-#define u0 		void
-
-#define I8 		int8_t
-#define I16 	int16_t
-#define I32 	int32_t
-#define I64 	int64_t
-
-#define U8 		uint8_t
-#define U16 	uint16_t
-#define U32 	uint32_t
-#define U64 	uint64_t
-#define U0 		void
+typedef uint8_t u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64
 
 #ifdef OEUF64
     typedef i64 oe_arch_int;
@@ -187,5 +157,10 @@ void oe_free(void *ptr);
 // allocate a new string using fmt and the args using vsnprintf
 char *oe_fstring(const char *fmt, ...);
 
+
+// len can be null, arr must have NULL at the end
+char **oe_strarr_append(char **arr, char *str, int *len);
+
+int oe_strarr_len(char **arr);
 
 #endif
