@@ -4,6 +4,23 @@
 if OEUF64 is defined 64bits functionalities will be enabled
 */
 
+#if defined(_WIN32)
+    #define OE_OS_WIN
+    #define OE_OS "windows"
+#elif defined(__linux__)
+    #define OE_OS_LINUX
+    #define OE_OS "linux"
+#elif defined(__APPLE__)
+    #define OE_OS_MACOS
+    #define OE_OS "macOS"
+#elif defined(__profanOS__)
+    #define OE_OS_PROFAN
+    #define OE_OS "profanOS"
+#else
+    #define OE_OS_UNKNOWN
+    #define OE_OS "unknown"
+#endif
+
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -95,26 +112,14 @@ char *oe_read_file(const char *path);
 char *oe_read_file_bin(const char *path, size_t *len);
 
 
-// return a new string which is the concatenation of `s1` and `s2` as null terminated string 
+// return a new string which is the concatenation of `s1` and `s2` as null terminated string
 char *oe_str_cat_new(const char *s1, const char *s2);
 
-// return a new string which is the concatenation of `s1` `s2` and `s3` as null terminated string 
+// return a new string which is the concatenation of `s1` `s2` and `s3` as null terminated string
 char *oe_str_cat_new3(const char *s1, const char *s2, const char *s3);
 
-// return a new string which is the concatenation of `s1` `s2` `s3`and `s4` as null terminated string 
+// return a new string which is the concatenation of `s1` `s2` `s3`and `s4` as null terminated string
 char *oe_str_cat_new4(const char *s1, const char *s2, const char *s3, const char *s4);
-
-/*
-split a string by a separator
-strings can be empty but not null
-null pointer indicate end
-every pointer of result may be free and result may be freed
-ex:
-    split("abc :! df :!:!uu", ":!")
-    -> ["abc", " df ", "", "uu", NULL]
-*/
-char **uit_str_split(char *str, char* sep);
-
 
 /*
     apply the selection sort on an array `arr` of integers of length `len`
@@ -170,12 +175,17 @@ enum oe_errno_values {
     oe_err_none,
     oe_err_no_mem,
     oe_err_free_invalid_pointer,
+    oe_err_realloc_invalid_pointer,
     oe_err_hash_map_key_not_found
 
 };
 
 void *oe_malloc(size_t size);
 void oe_free(void *ptr);
+
+
+// allocate a new string using fmt and the args using vsnprintf
+char *oe_fstring(const char *fmt, ...);
 
 
 #endif

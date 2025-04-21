@@ -104,8 +104,8 @@ void oe_hash_map_filter(
             if (!(*does_keep)(node->key, current_hash, node->data, map)) {
                 (*free_data)(node->key, current_hash, node->data, map);
                 oe_node_t *next = node->next;
-                free(node);
                 free(node->key);
+                free(node);
                 previous->next = next;
                 node = next;
                 continue;
