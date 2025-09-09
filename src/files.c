@@ -4,48 +4,42 @@
 #include <stdio.h>
 
 char *oe_read_file_bin(const char *path, size_t *lp) {
-    size_t len;
+	size_t len;
 
-    FILE *f = fopen(path, "r");
+	FILE *f = fopen(path, "rb");
 
-    if (!f)
-        return NULL;
+	if (!f)
+		return NULL;
 
-    // get file length
-    fseek(f, 0, SEEK_END);
-    len = ftell(f);
-    fseek(f, 0, SEEK_SET);
+	fseek(f, 0, SEEK_END);
+	len = ftell(f);
+	fseek(f, 0, SEEK_SET);
 
-    if (lp)
-        *lp = len;
+	if (lp)
+		*lp = len;
 
-    char *res = malloc(len * sizeof(char));
+	char *res = malloc(len * sizeof(char));
 
-    if (!res || fread(res, 1, len, f) != len) {
-        free(res);
-        return NULL;
-    }
+	if (!res || fread(res, 1, len, f) != len) {
+		free(res);
+		return NULL;
+	}
 
-    return res;
+	return res;
 }
 
 char *oe_read_file(const char *path) {
-    size_t len;
-    char *data = oe_read_file_bin(path, &len);
+	size_t len;
+	char *data = oe_read_file_bin(path, &len);
 
-    if (!data) {
-        return NULL;
-    }
+	if (!data)
+		return NULL;
 
-    // remove trailing null bytes
-    for (size_t i = 0; i < len; i++) {
-        if (data[i]) 
-            continue;
-        return realloc(data, i + 1);
-    }
+	int i = 0;
+	while (i < len && data[i])
+		i++;
 
-    data = realloc(data, len + 1);
-    data[len] = 0;
-
-    return data;
+	data = realloc(data, sizeof(char) * (i + 1));
+	data[len] = 0;
+	return data;
 }

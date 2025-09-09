@@ -1,28 +1,25 @@
-all :linux
+SRC = $(wildcard src/*.c src/*/*.c src/*/*/*.c)
+OBJ = $(SRC:.c=.o)
 
-COMMON_FLAGS = -Wall -Werror -Wextra -fno-builtin-printf -Wno-unused-function -fPIC -I.
+CC = gcc
+CF_FLAGS = -Wall -Werror -Wextra -fPIC -I.
+LD_FLAGS =
 
+NAME_SO = liboe.so
+NAME_A = liboe.a
 
-linux:
-	mkdir -p out
-	mkdir -p tmp
-	@echo building out/liboe.so with flags:
-	@echo '    '$(COMMON_FLAGS)
-	@gcc -shared $$(find src -name "*.c") -o out/liboe.so $(COMMON_FLAGS) -fPIC -DOEUF64
-	@x='0'; \
-	for i in $$(find src -name "*.c"); do \
-		gcc -c $$i -o tmp/$$x''.o $(COMMON_FLAGS) -DOEUF64; \
-		x=$$(($$x + 1)); \
-	done
-	@echo building out/liboe.a with flags:
-	@echo '    '$(COMMON_FLAGS)
-	@ar rcs out/liboe.a $$(find tmp -name "*.o")
-	@echo all done
+all: $(NAME_SO) $(NAME_A)
 
-profan:
-	olivine build.olv
+$(NAME_SO): $(OBJ)
+	$(CC) $(LD_FLAGS) $^ -o $@
 
-test: linux
+$(NAME_A): $(OBJ)
+	ar rcs $@ $^
+
+%.o: %.c
+	$(CC) $(CF_FLAGS) -c $< -o $@
+
+test: $(NAME_A)
 	@gcc -o test/test.o test/test.c out/liboe.a $(COMMON_FLAGS)
 	@./test/test.o > test/output.out
 	@if ! cmp -s test/test_output test/output.out; then \
@@ -36,4 +33,3 @@ test: linux
 		echo ;\
 	    exit 1 ;\
 	fi
-
