@@ -35,7 +35,7 @@ char *oe_read_file(const char *path) {
 	if (!data)
 		return NULL;
 
-	int i = 0;
+	size_t i = 0;
 	while (i < len && data[i])
 		i++;
 

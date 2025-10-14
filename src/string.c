@@ -1,4 +1,5 @@
 #include "oeuf.h"
+#include <stdarg.h>
 
 char *oe_fstring(const char *fmt, ...) {
 	va_list	args;
