@@ -41,4 +41,23 @@ char	**oe_strarr_append(char **arr, char *str, int *len, int free_error);
 int		oe_strarr_len(char **arr);
 void	oe_strarr_free(char **arr, int len);
 
+typedef struct oe_node_t {
+	char *key;
+	void *data;
+	struct oe_node_t *next;
+} oe_node_t;
+
+typedef struct oe_hashmap_t {
+	uint32_t len;
+	oe_node_t **nodes;
+} oe_hashmap_t;
+
+uint32_t oe_hash_str(char *str);
+int oe_hashmap_init(oe_hashmap_t *map, uint32_t len);
+int oe_hashmap_set(oe_hashmap_t *map, char *key, void *value);
+int oe_hashmap_set2(oe_hashmap_t *map, char *key, uint32_t hash, void *value);
+void *oe_hashmap_get(oe_hashmap_t *map, char *key);
+void **oe_hashmap_get2(oe_hashmap_t *map, char *key, uint32_t hash);
+
+
 #endif
