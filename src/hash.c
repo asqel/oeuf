@@ -48,6 +48,42 @@ int oe_hashmap_set2(oe_hashmap_t *map, char *key, uint32_t hash, void *value) {
 		map->nodes[hash]->next = NULL;
 		return 0;
 	}
+	oe_node_t *node = map->nodes[hash];
+	while (1) {
+		if (strcmp(node->key, key)) {
+			if (node->next) {
+				node = node->next;
+				continue;
+			}
+			node->next = malloc(sizeof(oe_node_t));
+			if (!node->next)
+				return 1;
+			node->next->key = strdup(key);
+			if (!node->next->key) {
+				free(node->next);
+				node->next = NULL;
+				return 1;
+			}
+			node->next->data = value;
+			node->next->next = NULL;
+			return 1;
+		} // TODO support if fiirst
+	}
 	return 0;
 }
 
+void *oe_hashmap_get(oe_hashmap_t *map, char *key) {
+	return *oe_hashmap_get2(map, key, oe_hash_str(key));
+}
+
+void **oe_hashmap_get2(oe_hashmap_t *map, char *key, uint32_t hash) {
+	hash %= map->len;
+
+	oe_node_t *node = map->nodes[hash];
+	while (node) {
+		if (!strcmp(node->key))
+			return &node->data;
+		node = node->next;
+	}
+	return NULL;
+}
