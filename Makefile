@@ -28,7 +28,7 @@ clean:
 fclean: clean
 	rm -rf $(NAME_A) $(NAME_SO)
 
-re: fclean clean
+re: fclean clean all
 
 test:
 	echo OK
