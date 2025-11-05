@@ -81,9 +81,30 @@ void **oe_hashmap_get2(oe_hashmap_t *map, char *key, uint32_t hash) {
 
 	oe_node_t *node = map->nodes[hash];
 	while (node) {
-		if (!strcmp(node->key))
+		if (!strcmp(node->key, key))
 			return &node->data;
 		node = node->next;
 	}
 	return NULL;
+}
+
+void oe_hashmap_free(oe_hashmap_t *map, void (*free_func)(void *)) {
+	for (size_t i = 0; i < map->len; i++) {
+		oe_node_t *node = map->nodes[i];
+		while (node) {
+			if (free_func)
+				free_func(node->data);
+			node = node->next;
+		}
+
+		node = map->nodes[i];
+		while (node) {
+			oe_node_t *next = node->next;
+			free(node);
+			node = next;
+		}
+	}
+	free(map->nodes);
+	map->nodes = NULL;
+	map->len = 0;
 }

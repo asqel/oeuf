@@ -59,5 +59,6 @@ int oe_hashmap_set2(oe_hashmap_t *map, char *key, uint32_t hash, void *value);
 void *oe_hashmap_get(oe_hashmap_t *map, char *key);
 void **oe_hashmap_get2(oe_hashmap_t *map, char *key, uint32_t hash);
 
+void oe_hashmap_free(oe_hashmap_t *map, void (*free_func)(void *));
 
 #endif
