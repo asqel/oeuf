@@ -90,12 +90,12 @@ void **oe_hashmap_get2(oe_hashmap_t *map, char *key, uint32_t hash) {
 	return NULL;
 }
 
-void oe_hashmap_free(oe_hashmap_t *map, void (*free_func)(void *)) {
+void oe_hashmap_free(oe_hashmap_t *map, void (*free_func)(char *, void *)) {
 	for (size_t i = 0; i < map->len; i++) {
 		oe_node_t *node = map->nodes[i];
 		while (node) {
 			if (free_func)
-				free_func(node->data);
+				free_func(node->key, node->data);
 			node = node->next;
 		}
 
@@ -155,4 +155,37 @@ void **oe_hashmap_get_values(oe_hashmap_t *map) {
 	}
 	res[k] = NULL;
 	return res;
+}
+
+
+void oe_hashmap_remove(oe_hashmap_t *map, char *key, void (*free_func)(char *, void *)) {
+	oe_hashmap_remove2(map, key, oe_hash_str(key), free_func);
+}
+
+void oe_hashmap_remove2(oe_hashmap_t *map, char *key, uint32_t hash, void (*free_func)(char *, void *)) {
+	hash %= map->len;
+	
+	oe_node_t *node = map->nodes[hash];
+	if (!strcmp(node->key, key)) {
+		oe_node_t *next = node->next;
+		if (free_func)
+			free_func(key, node->data);
+		free(node->key);
+		free(node);
+		map->nodes[hash] = next;
+		return ;
+	}
+	while (node->next) {
+		if (strcmp(node->next->key, key)) {
+			node = node->next;
+			continue;
+		}
+		if (free_func)
+			free_func(key, node->next->data);
+		oe_node_t *next = node->next->next;
+		free(node->next->key);
+		free(node->next);
+		node->next = next;
+		break;
+	}
 }

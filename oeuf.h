@@ -59,9 +59,13 @@ int oe_hashmap_set2(oe_hashmap_t *map, char *key, uint32_t hash, void *value);
 void *oe_hashmap_get(oe_hashmap_t *map, char *key);
 void **oe_hashmap_get2(oe_hashmap_t *map, char *key, uint32_t hash);
 
-void oe_hashmap_free(oe_hashmap_t *map, void (*free_func)(void *));
+void oe_hashmap_free(oe_hashmap_t *map, void (*free_func)(char *, void *));
 
 size_t oe_hashmap_len(oe_hashmap_t *map);
-char **oe_hashmap_get_keys(oe_hashmap_t *map); // free only return value not content
-void **oe_hashmap_get_values(oe_hashmap_t *map); // free only return value not content
+char **oe_hashmap_get_keys(oe_hashmap_t *map); // free only return value not content (adds NULL at end)
+void **oe_hashmap_get_values(oe_hashmap_t *map); // free only return value not content (adds NULL at end)
+
+void oe_hashmap_remove(oe_hashmap_t *map, char *key, void (*free_func)(char *, void *));
+void oe_hashmap_remove2(oe_hashmap_t *map, char *key, uint32_t hash, void (*free_func)(char *, void *));
+
 #endif
