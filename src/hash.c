@@ -15,10 +15,11 @@ int oe_hashmap_init(oe_hashmap_t *map, uint32_t len) {
 		return 1;
 	if (!len)
 		len = 1024;
-	map->len = len;
+	map->len = 0;
 	map->nodes = malloc(sizeof(oe_node_t *) * len);
 	if (!map->nodes)
 		return 1;
+	map->len = len;
 	for (uint32_t i = 0; i < len; i++)
 		map->nodes[i] = NULL;
 	return 0;
@@ -132,7 +133,7 @@ char **oe_hashmap_get_keys(oe_hashmap_t *map) {
 	for (size_t i = 0; i < map->len; i++) {
 		oe_node_t *node = map->nodes[i];
 		while (node) {
-			res[k++] = node->key;
+			res[k++] = strdup(node->key);
 			node = node->next;
 		}
 	}
@@ -156,7 +157,6 @@ void **oe_hashmap_get_values(oe_hashmap_t *map) {
 	res[k] = NULL;
 	return res;
 }
-
 
 void oe_hashmap_remove(oe_hashmap_t *map, char *key, void (*free_func)(char *, void *)) {
 	oe_hashmap_remove2(map, key, oe_hash_str(key), free_func);
@@ -188,4 +188,12 @@ void oe_hashmap_remove2(oe_hashmap_t *map, char *key, uint32_t hash, void (*free
 		node->next = next;
 		break;
 	}
+}
+
+void oe_hashmap_free_keys(char **keys) {
+	if (!keys)
+		return ;
+	for (int i = 0; keys[i]; i++)
+		free(keys[i]);
+	free(keys);
 }

@@ -68,4 +68,7 @@ void **oe_hashmap_get_values(oe_hashmap_t *map); // free only return value not c
 void oe_hashmap_remove(oe_hashmap_t *map, char *key, void (*free_func)(char *, void *));
 void oe_hashmap_remove2(oe_hashmap_t *map, char *key, uint32_t hash, void (*free_func)(char *, void *));
 
+void oe_hashmap_free_keys(char **keys);
+#define oe_hashmap_free_value free
+
 #endif
