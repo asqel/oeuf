@@ -22,9 +22,11 @@ char *oe_read_file_bin(const char *path, size_t *lp) {
 
 	if (!res || fread(res, 1, len, f) != len) {
 		free(res);
+		fclose(f);
 		return NULL;
 	}
-
+	
+	fclose(f);
 	return res;
 }
 
