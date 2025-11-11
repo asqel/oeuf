@@ -36,10 +36,11 @@ char	*oe_str_replace(const char *str, const char *from, const char *to);
 char	*oe_fstring(const char *fmt, ...);
 
 
-// if len == NULL: len is guessed with NULL terminated array
+// if len == NULL or < 0: len is guessed with NULL terminated array
 char	**oe_strarr_append(char **arr, char *str, int *len, int free_error);
 int		oe_strarr_len(char **arr);
 void	oe_strarr_free(char **arr, int len);
+char 	**oe_strarr_dup(char **arr, int len);
 
 typedef struct oe_node_t {
 	char *key;
