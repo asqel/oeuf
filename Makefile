@@ -4,7 +4,7 @@ OBJ = $(SRC:.c=.o)
 CC = gcc
 LD = gcc
 
-CFLAGS = -Wall -Wextra -Iinclude -I.
+CFLAGS = -Wall -Wextra -Iinclude -I. -g
 LDFLAGS = -shared
 
 NAME = liboeuf
