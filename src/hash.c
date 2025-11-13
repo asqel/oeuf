@@ -170,6 +170,8 @@ void oe_hashmap_remove2(oe_hashmap_t *map, char *key, uint32_t hash, void (*free
 	hash %= map->len;
 	
 	oe_node_t *node = map->nodes[hash];
+	if (!node)
+		return ;
 	if (!strcmp(node->key, key)) {
 		oe_node_t *next = node->next;
 		if (free_func)
