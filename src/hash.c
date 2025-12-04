@@ -76,7 +76,11 @@ int oe_hashmap_set2(oe_hashmap_t *map, char *key, uint32_t hash, void *value) {
 }
 
 void *oe_hashmap_get(oe_hashmap_t *map, char *key) {
-	return *oe_hashmap_get2(map, key, oe_hash_str(key));
+	
+	void ** res = oe_hashmap_get2(map, key, oe_hash_str(key));
+	if (!res)
+		return NULL;
+	return *res;
 }
 
 void **oe_hashmap_get2(oe_hashmap_t *map, char *key, uint32_t hash) {
@@ -167,6 +171,8 @@ void oe_hashmap_remove2(oe_hashmap_t *map, char *key, uint32_t hash, void (*free
 	hash %= map->len;
 	
 	oe_node_t *node = map->nodes[hash];
+	if (!node)
+		return ;
 	if (!strcmp(node->key, key)) {
 		oe_node_t *next = node->next;
 		if (free_func)

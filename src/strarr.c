@@ -1,4 +1,5 @@
 #include "oeuf.h"
+#include <string.h>
 
 int oe_strarr_len(char **arr) {
 	if (!arr)
@@ -37,4 +38,23 @@ void oe_strarr_free(char **arr, int len) {
 	for (int i = 0; i < len; i++)
 		free(arr[i]);
 	free(arr);
+}
+
+char **oe_strarr_dup(char **arr, int len) {
+	if (len == -1)
+		len = oe_strarr_len(arr);
+	char **res = malloc(sizeof(char *) * (len + 1));
+	if (!res)
+		return NULL;
+	res[len] = NULL;
+	for (int i = 0; i < len; i++) {
+		res[i] = strdup(arr[i]);
+		if (!res[i]) {
+			for (int k = 0; k < i; k++)
+				free(res[k]);
+			free(res);
+			return NULL;
+		}
+	}
+	return res;
 }
