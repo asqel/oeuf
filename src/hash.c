@@ -97,6 +97,7 @@ void oe_hashmap_free(oe_hashmap_t *map, void (*free_func)(char *, void *)) {
 		while (node) {
 			if (free_func)
 				free_func(node->key, node->data);
+			free(node->key);
 			node = node->next;
 		}
 
