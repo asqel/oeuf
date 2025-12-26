@@ -72,4 +72,20 @@ void oe_hashmap_remove2(oe_hashmap_t *map, char *key, uint32_t hash, void (*free
 void oe_hashmap_free_keys(char **keys);
 #define oe_hashmap_free_value free
 
+#define OE_BIGINT_ALLOC_INC 8
+
+typedef struct {
+	size_t alloc_len; // % OE_BIGINT_ALLOC_INC && > 0
+	size_t len;
+	uint64_t *parts;
+} oe_bigint_t; // unsigned
+
+int oe_bigint_init(oe_bigint_t *self);
+void oe_bigint_free(oe_bigint_t *self);
+
+// returns 1 for alloc errors
+int oe_bigint_add(oe_bigint_t *self, oe_bigint_t *other);
+int oe_bigint_add2(oe_bigint_t *self, uint32_t other); // cannot fail technicaly
+int oe_bigint_add3(oe_bigint_t *res, oe_bigint_t *a, oe_bigint_t *b);
+
 #endif
