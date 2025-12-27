@@ -85,7 +85,7 @@ void oe_bigint_free(oe_bigint_t *self);
 
 // returns 1 for alloc errors
 int oe_bigint_add(oe_bigint_t *self, oe_bigint_t *other);
-int oe_bigint_add2(oe_bigint_t *self, uint32_t other); // cannot fail technicaly
+int oe_bigint_add2(oe_bigint_t *self, uint32_t other);
 int oe_bigint_add3(oe_bigint_t *res, oe_bigint_t *a, oe_bigint_t *b);
 
 #endif
