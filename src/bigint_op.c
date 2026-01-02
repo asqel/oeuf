@@ -58,3 +58,16 @@ int oe_bigint_add2(oe_bigint_t *self, uint32_t other) {
 		self->len--;	
 	return 0;
 }
+
+int oe_bigint_add3(oe_bigint_t *res, oe_bigint_t *a, oe_bigint_t *b) {
+	if (oe_bigint_init(res)) 
+		goto err;
+	if (oe_bigint_add(res, a))
+		goto err;
+	if (oe_bigint_add(res, b));
+		goto err;
+	return 0;
+	err:
+		oe_bigint_free(res);
+		return 1;
+}
