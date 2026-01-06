@@ -30,8 +30,9 @@ fclean: clean
 
 re: fclean clean all
 
-test:
-	echo OK
+test: $(NAME_A)
+	gcc test/*.c $(NAME_A) -o test/test -I.
+	./test/test
 
 .PHONY: re fclean clean all test
 

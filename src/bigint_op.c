@@ -10,7 +10,7 @@ int oe_bigint_add(oe_bigint_t *self, oe_bigint_t *other) {
 				* OE_BIGINT_ALLOC_INC;
 	
 	if (new_len > self->alloc_len) {
-		uint64_t *tmp = realloc(self->parts, sizeof(uint64_t) * new_len);
+		int64_t *tmp = realloc(self->parts, sizeof(int64_t) * new_len);
 		if (!tmp)
 			return 1;
 		self->alloc_len = new_len;
@@ -35,10 +35,12 @@ int oe_bigint_add2(oe_bigint_t *self, uint32_t other) {
 
 	if (self->len && self->parts[self->len - 1] >> 31)
 		need_resize = 1;
+	if (!self->len)
+		need_resize = 1;
 	if (need_resize && self->alloc_len < self->len + 1) {
 		size_t new_len = (self->alloc_len / OE_BIGINT_ALLOC_INC + 1)
 				* OE_BIGINT_ALLOC_INC;
-		uint64_t *tmp = realloc(self->parts, sizeof(uint64_t) * new_len);
+		int64_t *tmp = realloc(self->parts, sizeof(int64_t) * new_len);
 		if (!tmp)
 			return 1;
 		self->parts = tmp;
@@ -59,15 +61,45 @@ int oe_bigint_add2(oe_bigint_t *self, uint32_t other) {
 	return 0;
 }
 
-int oe_bigint_add3(oe_bigint_t *res, oe_bigint_t *a, oe_bigint_t *b) {
-	if (oe_bigint_init(res)) 
-		goto err;
-	if (oe_bigint_add(res, a))
-		goto err;
-	if (oe_bigint_add(res, b));
-		goto err;
-	return 0;
-	err:
-		oe_bigint_free(res);
+int oe_bigint_sub(oe_bigint_t *self, oe_bigint_t *other) {
+	if (other->len > self->len)
 		return 1;
+	if (other->len == self->len &&
+			self->parts[self->len - 1] < other->parts[other->len - 1]) {
+		return 1;
+	}
+	size_t i = 0;
+	for (i = 0; i < other->len; i++)
+		self->parts[i] -= other->parts[i];
+
+	i = 0;
+	while (i < self->len - 1 && self->parts[i] < 0) {
+		self->parts[i + 1]--;
+		self->parts[i] = UINT32_MAX - (-self->parts[i]) + 1;
+		i++;
+	}
+
+	while (self->len && !self->parts[self->len - 1])
+		self->len--;	
+
+	
+	return 0;
+}
+
+int oe_bigint_sub2(oe_bigint_t *self, uint32_t other) {
+	if (self->len == 1 && self->parts[0] < other)
+		return 1;
+	self->parts[0] -= (int64_t)other;
+
+	size_t i = 0;
+	while (i < self->len - 1 && self->parts[i] < 0) {
+		self->parts[i + 1]--;
+		self->parts[i] = UINT32_MAX - (-self->parts[i]) + 1;
+		i++;
+	}
+
+	while (self->len && !self->parts[self->len - 1])
+		self->len--;	
+
+	return 0;
 }

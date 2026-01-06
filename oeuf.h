@@ -75,17 +75,24 @@ void oe_hashmap_free_keys(char **keys);
 #define OE_BIGINT_ALLOC_INC 8
 
 typedef struct {
-	size_t alloc_len; // % OE_BIGINT_ALLOC_INC && > 0
-	size_t len;
-	uint64_t *parts;
+	size_t alloc_len; // % OE_BIGINT_ALLOC_INC == 0 && > 0
+	size_t len; // not leading 0s
+	int64_t *parts; // signed for negative carry (ex: 30 - 07)
 } oe_bigint_t; // unsigned
 
+// returns 1 for alloc errors
 int oe_bigint_init(oe_bigint_t *self);
+int oe_bigint_copy(oe_bigint_t *dest, oe_bigint_t *src);
 void oe_bigint_free(oe_bigint_t *self);
 
 // returns 1 for alloc errors
 int oe_bigint_add(oe_bigint_t *self, oe_bigint_t *other);
 int oe_bigint_add2(oe_bigint_t *self, uint32_t other);
-int oe_bigint_add3(oe_bigint_t *res, oe_bigint_t *a, oe_bigint_t *b);
+
+// returns 1 if other > self 
+int oe_bigint_sub(oe_bigint_t *self, oe_bigint_t *other);
+int oe_bigint_sub2(oe_bigint_t *self, uint32_t other);
+
+void oe_bigint_print_hex(oe_bigint_t *self);
 
 #endif
