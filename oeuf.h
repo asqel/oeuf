@@ -94,5 +94,12 @@ int oe_bigint_sub(oe_bigint_t *self, oe_bigint_t *other);
 int oe_bigint_sub2(oe_bigint_t *self, uint32_t other);
 
 void oe_bigint_print_hex(oe_bigint_t *self);
+void oe_bigint_print_bin(oe_bigint_t *self);
+
+int oe_bigint_lshift_bit(oe_bigint_t *self, size_t n);
+int oe_bigint_lshift_4byte(oe_bigint_t *self, size_t n);
+
+int oe_bigint_rshift_bit(oe_bigint_t *self, size_t n);
+int oe_bigint_rshift_4byte(oe_bigint_t *self, size_t n);
 
 #endif
