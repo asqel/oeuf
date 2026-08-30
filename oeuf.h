@@ -102,4 +102,21 @@ int oe_bigint_lshift_4byte(oe_bigint_t *self, size_t n);
 int oe_bigint_rshift_bit(oe_bigint_t *self, size_t n);
 int oe_bigint_rshift_4byte(oe_bigint_t *self, size_t n);
 
+typedef struct {
+	size_t size;
+	union {
+		uint8_t *dynamic;
+		uint64_t fixed;
+	};
+	uint8_t is_alloc;
+} oe_bitset_t;
+
+int oe_bitset_init(oe_bitset_t *bitset, size_t size_bit);
+void oe_bitset_set(oe_bitset_t *bitset, size_t idx);
+void oe_bitset_clear(oe_bitset_t *bitset, size_t idx);
+size_t oe_bitset_test(oe_bitset_t *bitset, size_t idx);
+#define OE_BITSET_SET(BITSET_PTR, BIT_IDX) ((BITSET_PTR->is_alloc) ? (BITSET_PTR->dynamic[(size_t)(BIT_IDX) >> 3] |= (size_t)1 << ((BIT_IDX) & 7)) : (BITSET_PTR->fixed |= (size_t)1 << (BIT_IDX)))
+#define OE_BITSET_CLEAR(BITSET_PTR, BIT_IDX) ((BITSET_PTR->is_alloc) ? (BITSET_PTR->dynamic[(size_t)(BIT_IDX) >> 3] &= ~((size_t)1 << ((BIT_IDX) & 7))) : (BITSET_PTR->fixed &= ~((size_t)1 << (BIT_IDX))))
+#define OE_BITSET_TEST(BITSET_PTR, BIT_IDX) ((BITSET_PTR->is_alloc) ? (BITSET_PTR->dynamic[(size_t)(BIT_IDX) >> 3] & ((size_t)1 << ((BIT_IDX) & 7))) : (BITSET_PTR->fixed & ((size_t)1 << (BIT_IDX))))
+
 #endif
